@@ -103,6 +103,7 @@ CREATE TABLE `nnuser` (
   `useraktif` char(1) DEFAULT '1',
   `userfoto` varchar(150) DEFAULT NULL,
   `userlevelid` int(11) DEFAULT NULL,
+  `usertokoid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`,`userid`),
   KEY `userlevelid` (`userlevelid`),
   CONSTRAINT `nnuser_ibfk_1` FOREIGN KEY (`userlevelid`) REFERENCES `nnlevel` (`levelid`) ON UPDATE CASCADE
@@ -110,8 +111,8 @@ CREATE TABLE `nnuser` (
 
 /*Data for the table `nnuser` */
 
-insert  into `nnuser`(`id`,`userid`,`usernama`,`userpass`,`useraktif`,`userfoto`,`userlevelid`) values 
-(1,'superadmin','Super Admin','$2y$10$tEK67mPdVZEbAc/ETJejv.QtiNC66OtaJo9vbMgzUPHhlvRc0LBVC','1',NULL,3);
+insert  into `nnuser`(`id`,`userid`,`usernama`,`userpass`,`useraktif`,`userfoto`,`userlevelid`,`usertokoid`) values 
+(1,'superadmin','Super Admin','$2y$10$A04zjkjeFMS0JiYllYOkqeaGkOk9Ruwb1PilDsGYGK/p8bBL6QD7S','1',NULL,3,NULL);
 
 /*Table structure for table `pembelian` */
 
@@ -123,9 +124,12 @@ CREATE TABLE `pembelian` (
   `belisupid` int(11) DEFAULT NULL,
   `beliuserinput` char(20) DEFAULT NULL,
   `belitotal` double DEFAULT 0,
+  `belitokoid` int(11) DEFAULT NULL,
   PRIMARY KEY (`belinota`),
   KEY `belisupid` (`belisupid`),
-  CONSTRAINT `pembelian_ibfk_1` FOREIGN KEY (`belisupid`) REFERENCES `supplier` (`supid`) ON UPDATE CASCADE
+  KEY `belitokoid` (`belitokoid`),
+  CONSTRAINT `pembelian_ibfk_1` FOREIGN KEY (`belisupid`) REFERENCES `supplier` (`supid`) ON UPDATE CASCADE,
+  CONSTRAINT `pembelian_ibfk_2` FOREIGN KEY (`belitokoid`) REFERENCES `toko` (`tokoid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `pembelian` */
@@ -142,7 +146,10 @@ CREATE TABLE `penjualan` (
   `jualdiskon` double DEFAULT 0,
   `jualbayar` double DEFAULT 0,
   `jualsisa` double DEFAULT 0,
-  PRIMARY KEY (`jualnota`)
+  `jualtokoid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`jualnota`),
+  KEY `jualtokoid` (`jualtokoid`),
+  CONSTRAINT `penjualan_ibfk_1` FOREIGN KEY (`jualtokoid`) REFERENCES `toko` (`tokoid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*Data for the table `penjualan` */
@@ -162,6 +169,7 @@ CREATE TABLE `produk` (
   `userinput` char(20) DEFAULT NULL,
   `tgledit` datetime DEFAULT NULL,
   `useredit` char(20) DEFAULT NULL,
+  `produktokoid` int(11) DEFAULT NULL,
   PRIMARY KEY (`produkid`),
   KEY `produk_ibfk_1` (`produkkatid`),
   KEY `produksatid` (`produksatid`),
@@ -251,6 +259,7 @@ CREATE TABLE `tempjual` (
   `tempharga` double DEFAULT NULL,
   `tempsubtotal` double DEFAULT NULL,
   `tempuserinput` char(20) DEFAULT NULL,
+  `temptokoid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
